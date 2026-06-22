@@ -1,0 +1,45 @@
+{
+  "actorInputSchemaVersion": 1,
+  "title": "Amazon Category Scraper",
+  "description": "Crawl an Amazon category/search URL and extract structured product data from every listing and detail page.",
+  "type": "object",
+  "schemaVersion": 1,
+  "properties": {
+    "categoryUrl": {
+      "title": "Category / Search URL",
+      "type": "string",
+      "description": "A valid Amazon category or search URL, e.g. https://www.amazon.in/s?i=toys&rh=n%3A1350380031",
+      "editor": "textfield"
+    },
+    "maxPages": {
+      "title": "Max Listing Pages",
+      "type": "integer",
+      "description": "Maximum number of paginated listing pages to crawl.",
+      "default": 5,
+      "minimum": 1,
+      "maximum": 200
+    },
+    "maxProducts": {
+      "title": "Max Products (optional)",
+      "type": "integer",
+      "description": "Hard cap on total products extracted. Leave blank to scrape all found products.",
+      "minimum": 1
+    },
+    "locale": {
+      "title": "Locale",
+      "type": "string",
+      "description": "Amazon locale used to set Accept-Language headers and derive currency code.",
+      "default": "en-IN",
+      "enum": ["en-IN", "en-US", "en-GB", "de-DE", "fr-FR", "es-ES", "it-IT", "ja-JP"],
+      "enumTitles": ["India (en-IN)", "United States (en-US)", "United Kingdom (en-GB)", "Germany (de-DE)", "France (fr-FR)", "Spain (es-ES)", "Italy (it-IT)", "Japan (ja-JP)"]
+    },
+    "proxyConfiguration": {
+      "title": "Proxy Configuration",
+      "type": "object",
+      "description": "Proxy settings. Recommended: Apify Residential or SERP proxies to avoid bot-blocks.",
+      "editor": "proxy",
+      "prefill": { "useApifyProxy": true, "apifyProxyGroups": ["RESIDENTIAL"] }
+    }
+  },
+  "required": ["categoryUrl"]
+}

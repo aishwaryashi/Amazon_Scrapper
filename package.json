@@ -1,0 +1,19 @@
+{
+  "name": "amazon-category-scraper",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Apify Actor — crawls Amazon category pages and extracts structured product data",
+  "main": "src/main.js",
+  "scripts": {
+    "start": "node src/main.js",
+    "start:dev": "APIFY_IS_AT_HOME=0 node src/main.js"
+  },
+  "dependencies": {
+    "apify": "^3.2.2",
+    "crawlee": "^3.9.3",
+    "playwright": "^1.44.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

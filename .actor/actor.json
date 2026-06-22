@@ -1,0 +1,42 @@
+{
+  "actorSpecification": 1,
+  "name": "amazon-category-scraper",
+  "version": "1.0",
+  "buildTag": "latest",
+  "dockerfile": "../Dockerfile",
+  "readme": "../README.md",
+  "input": "./input_schema.json",
+  "storages": {
+    "dataset": {
+      "actorSpecification": 1,
+      "views": {
+        "overview": {
+          "title": "Products Overview",
+          "transformation": {
+            "fields": [
+              "asin", "title", "brand", "price", "currency",
+              "originalPrice", "discountPercent", "rating",
+              "reviewCount", "availability", "scrapedAt"
+            ]
+          },
+          "display": {
+            "component": "table",
+            "properties": {
+              "asin":            { "label": "ASIN",          "format": "text" },
+              "title":           { "label": "Title",         "format": "text" },
+              "brand":           { "label": "Brand",         "format": "text" },
+              "price":           { "label": "Price",         "format": "number" },
+              "currency":        { "label": "Currency",      "format": "text" },
+              "originalPrice":   { "label": "MRP",           "format": "number" },
+              "discountPercent": { "label": "Discount %",    "format": "number" },
+              "rating":          { "label": "Rating",        "format": "number" },
+              "reviewCount":     { "label": "Reviews",       "format": "number" },
+              "availability":    { "label": "Availability",  "format": "text" },
+              "scrapedAt":       { "label": "Scraped At",    "format": "datetime" }
+            }
+          }
+        }
+      }
+    }
+  }
+}
