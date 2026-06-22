@@ -1,7 +1,7 @@
 # Graph Report - Amazon_Scrapper  (2026-06-22)
 
 ## Corpus Check
-- 9 files · ~3,351 words
+- 9 files · ~3,349 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
@@ -10,7 +10,7 @@
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `3b04d987`
+- Built from commit: `4000c90f`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 

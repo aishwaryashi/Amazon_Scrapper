@@ -1,5 +1,4 @@
 {
-  "actorInputSchemaVersion": 1,
   "title": "Amazon Category Scraper",
   "description": "Crawl an Amazon category/search URL and extract structured product data from every listing and detail page.",
   "type": "object",
