@@ -30,31 +30,72 @@ router.addHandler('LISTING', async ({ page, request, enqueueLinks, log }) => {
   let nextUrl   = null;
 
   if (isBestsellers) {
-    // ── Bestsellers layout (/gp/bestsellers/...) ─────────────────────────────
-    // Products live in <li class="zg-item-immersion">; each card has multiple
-    // <a> tags pointing to the same /dp/ URL, so we deduplicate by ASIN.
-    await page.waitForSelector(LISTING.bsRoot, { timeout: 15_000 }).catch(() => {
-      log.warning(`[LISTING] Bestseller items not found on page ${pageNum}`);
+    // ── Bestsellers layout (/gp/bestsellers/... or /zgbs/...) ────────────────
+    //
+    // Amazon India's bestseller layout changes frequently and no longer uses
+    // stable class names like .zg-item-immersion.  Instead we:
+    //   1. Wait for ANY /dp/ anchor to appear (universal signal that products loaded)
+    //   2. Extract unique ASINs from /dp/ links scoped to the product grid
+    //   3. Build canonical URLs from each ASIN
+    //
+    // This approach survives layout changes because /dp/<ASIN> is a permanent
+    // Amazon URL pattern that will never change.
+
+    const origin = new URL(url).origin; // e.g. "https://www.amazon.in"
+
+    // Wait up to 20 s for any product link — gives time for lazy-loaded grids
+    await page.waitForSelector('a[href*="/dp/"]', { timeout: 20_000 }).catch(() => {
+      log.warning(`[LISTING] No /dp/ links appeared on bestseller page ${pageNum}`);
     });
 
-    allLinks = await page.evaluate((bsLink) => {
-      const seen = new Set();
+    // Extra settle time for JS-rendered grids
+    await page.waitForTimeout(2500);
+
+    // Log the first 300 chars of body for debugging if needed
+    const gridDebug = await page.evaluate(() => {
+      const grid = document.querySelector('#zg-ordered-list, #zg-right-col, .p13n-desktop-grid');
+      return grid ? `found: ${grid.id || grid.className.slice(0, 60)}` : 'no grid container found';
+    });
+    log.info(`[LISTING] Grid container: ${gridDebug}`);
+
+    allLinks = await page.evaluate((origin) => {
+      const seen  = new Set();
+      const asinRe = /\/dp\/([A-Z0-9]{10})/i;
+
+      // Prefer a scoped grid container; fall back to full body
+      const containers = [
+        '#zg-ordered-list',
+        '#zg-right-col',
+        '.p13n-desktop-grid',
+        'body',
+      ];
+
+      let root = null;
+      for (const sel of containers) {
+        root = document.querySelector(sel);
+        if (root) break;
+      }
+
       const results = [];
-      document.querySelectorAll(bsLink).forEach((a) => {
-        // Strip ref= query params so the same ASIN isn't duplicated
-        const base = a.href.split('?')[0].split('/ref=')[0];
-        if (!seen.has(base)) {
-          seen.add(base);
-          results.push(base);
+      root.querySelectorAll('a[href*="/dp/"]').forEach((a) => {
+        const m = a.href.match(asinRe);
+        if (!m) return;
+        const asin = m[1].toUpperCase();
+        if (!seen.has(asin)) {
+          seen.add(asin);
+          results.push(`${origin}/dp/${asin}`);
         }
       });
-      return results;
-    }, LISTING.bsLink);
 
-    nextUrl = await page.evaluate((sel) => {
-      const a = document.querySelector(sel);
-      return a ? a.href : null;
-    }, LISTING.bsNextPage);
+      return results;
+    }, origin);
+
+    // Next-page: scope to main column to avoid grabbing sidebar pagination
+    nextUrl = await page.evaluate(() => {
+      const col  = document.querySelector('#zg-right-col') || document.body;
+      const next = col.querySelector('ul.a-pagination .a-last a, li.a-last a');
+      return next ? next.href : null;
+    });
 
   } else {
     // ── Standard search / category SERP (/s?... or /s/...) ──────────────────

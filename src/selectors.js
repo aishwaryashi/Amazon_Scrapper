@@ -12,10 +12,9 @@ export const LISTING = {
   nextPage:     'a.s-pagination-next:not([aria-disabled="true"]):not(.s-pagination-disabled)',
 
   // ── Bestsellers / zgbs  (/gp/bestsellers/... or /zgbs/...)
-  // Each <li class="zg-item-immersion"> contains several <a> tags for the same product;
-  // we deduplicate by canonical /dp/ URL in the route handler.
-  bsRoot:     '#zg-ordered-list li, #gridItemRoot li, .zg-item-immersion',
-  bsLink:     '.zg-item-immersion a.a-link-normal[href*="/dp/"]',
+  // Product extraction is handled in routes.js via /dp/ ASIN pattern scanning
+  // (class-name-free approach — survives Amazon layout changes).
+  // Only the pagination selector is kept here for reference.
   bsNextPage: 'ul.a-pagination .a-last a',
 };
 

@@ -5,8 +5,8 @@
     "semantic_hash": ""
   },
   "E:\\upyojan\\Applications\\Amazon_Scrapper\\.actor\\actor.json": {
-    "mtime": 1782144500.7807941,
-    "ast_hash": "1980bec4b945cc54d734229867f0d4e0",
+    "mtime": 1782147547.8108122,
+    "ast_hash": "93207e608712528c3c25fc31f6c31e29",
     "semantic_hash": ""
   },
   "E:\\upyojan\\Applications\\Amazon_Scrapper\\.actor\\input_schema.json": {
@@ -15,23 +15,23 @@
     "semantic_hash": ""
   },
   "E:\\upyojan\\Applications\\Amazon_Scrapper\\src\\extractors.js": {
-    "mtime": 1782142740.9012783,
-    "ast_hash": "011f65c785eac671f217fa3747da9442",
+    "mtime": 1782146770.0510962,
+    "ast_hash": "86e713fcd8a10cdc8cf76e51a898f853",
     "semantic_hash": ""
   },
   "E:\\upyojan\\Applications\\Amazon_Scrapper\\src\\main.js": {
-    "mtime": 1782142842.8669732,
-    "ast_hash": "6bc27360e9565afa72393561876ae88d",
+    "mtime": 1782145306.6997232,
+    "ast_hash": "fd9bf3ff3d07e2a11a31fc6bd13362a6",
     "semantic_hash": ""
   },
   "E:\\upyojan\\Applications\\Amazon_Scrapper\\src\\routes.js": {
-    "mtime": 1782144466.8638134,
-    "ast_hash": "901def2841de586d543cb3dc01bc6aac",
+    "mtime": 1782147430.0249996,
+    "ast_hash": "42725b48c844a7602d0900f6d7d566d8",
     "semantic_hash": ""
   },
   "E:\\upyojan\\Applications\\Amazon_Scrapper\\src\\selectors.js": {
-    "mtime": 1782144241.5174727,
-    "ast_hash": "61cf1f7c44f5e74aa793a5fb2a3ea391",
+    "mtime": 1782147445.4813082,
+    "ast_hash": "b224a24689e6b1269af39acddbbea4eb",
     "semantic_hash": ""
   },
   "E:\\upyojan\\Applications\\Amazon_Scrapper\\src\\utils.js": {

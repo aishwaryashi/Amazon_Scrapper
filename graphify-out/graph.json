@@ -513,7 +513,7 @@
       "source_file": ".actor/input_schema.json",
       "source_location": "L13",
       "id": "actor_input_schema_properties_maxpages",
-      "community": 10,
+      "community": 0,
       "norm_label": "maxpages"
     },
     {
@@ -522,7 +522,7 @@
       "source_file": ".actor/input_schema.json",
       "source_location": "L14",
       "id": "actor_input_schema_maxpages_title",
-      "community": 10,
+      "community": 0,
       "norm_label": "title"
     },
     {
@@ -531,7 +531,7 @@
       "source_file": ".actor/input_schema.json",
       "source_location": "L15",
       "id": "actor_input_schema_maxpages_type",
-      "community": 10,
+      "community": 0,
       "norm_label": "type"
     },
     {
@@ -540,7 +540,7 @@
       "source_file": ".actor/input_schema.json",
       "source_location": "L16",
       "id": "actor_input_schema_maxpages_description",
-      "community": 10,
+      "community": 0,
       "norm_label": "description"
     },
     {
@@ -549,7 +549,7 @@
       "source_file": ".actor/input_schema.json",
       "source_location": "L17",
       "id": "actor_input_schema_maxpages_default",
-      "community": 10,
+      "community": 0,
       "norm_label": "default"
     },
     {
@@ -558,7 +558,7 @@
       "source_file": ".actor/input_schema.json",
       "source_location": "L18",
       "id": "actor_input_schema_maxpages_minimum",
-      "community": 10,
+      "community": 0,
       "norm_label": "minimum"
     },
     {
@@ -567,7 +567,7 @@
       "source_file": ".actor/input_schema.json",
       "source_location": "L19",
       "id": "actor_input_schema_maxpages_maximum",
-      "community": 10,
+      "community": 0,
       "norm_label": "maximum"
     },
     {
@@ -621,7 +621,7 @@
       "source_file": ".actor/input_schema.json",
       "source_location": "L27",
       "id": "actor_input_schema_properties_locale",
-      "community": 0,
+      "community": 10,
       "norm_label": "locale"
     },
     {
@@ -630,7 +630,7 @@
       "source_file": ".actor/input_schema.json",
       "source_location": "L28",
       "id": "actor_input_schema_locale_title",
-      "community": 0,
+      "community": 10,
       "norm_label": "title"
     },
     {
@@ -639,7 +639,7 @@
       "source_file": ".actor/input_schema.json",
       "source_location": "L29",
       "id": "actor_input_schema_locale_type",
-      "community": 0,
+      "community": 10,
       "norm_label": "type"
     },
     {
@@ -648,7 +648,7 @@
       "source_file": ".actor/input_schema.json",
       "source_location": "L30",
       "id": "actor_input_schema_locale_description",
-      "community": 0,
+      "community": 10,
       "norm_label": "description"
     },
     {
@@ -657,7 +657,7 @@
       "source_file": ".actor/input_schema.json",
       "source_location": "L31",
       "id": "actor_input_schema_locale_default",
-      "community": 0,
+      "community": 10,
       "norm_label": "default"
     },
     {
@@ -666,7 +666,7 @@
       "source_file": ".actor/input_schema.json",
       "source_location": "L32",
       "id": "actor_input_schema_locale_enum",
-      "community": 0,
+      "community": 10,
       "norm_label": "enum"
     },
     {
@@ -675,7 +675,7 @@
       "source_file": ".actor/input_schema.json",
       "source_location": "L33",
       "id": "actor_input_schema_locale_enumtitles",
-      "community": 0,
+      "community": 10,
       "norm_label": "enumtitles"
     },
     {
@@ -808,7 +808,7 @@
       "label": "extractPrice()",
       "file_type": "code",
       "source_file": "src/extractors.js",
-      "source_location": "L52",
+      "source_location": "L64",
       "id": "src_extractors_extractprice",
       "community": 11,
       "norm_label": "extractprice()"
@@ -817,7 +817,7 @@
       "label": "extractOriginalPrice()",
       "file_type": "code",
       "source_file": "src/extractors.js",
-      "source_location": "L56",
+      "source_location": "L68",
       "id": "src_extractors_extractoriginalprice",
       "community": 11,
       "norm_label": "extractoriginalprice()"
@@ -826,7 +826,7 @@
       "label": "extractDiscountPercent()",
       "file_type": "code",
       "source_file": "src/extractors.js",
-      "source_location": "L60",
+      "source_location": "L72",
       "id": "src_extractors_extractdiscountpercent",
       "community": 5,
       "norm_label": "extractdiscountpercent()"
@@ -835,7 +835,7 @@
       "label": "extractDealBadge()",
       "file_type": "code",
       "source_file": "src/extractors.js",
-      "source_location": "L67",
+      "source_location": "L79",
       "id": "src_extractors_extractdealbadge",
       "community": 5,
       "norm_label": "extractdealbadge()"
@@ -844,7 +844,7 @@
       "label": "extractImages()",
       "file_type": "code",
       "source_file": "src/extractors.js",
-      "source_location": "L82",
+      "source_location": "L94",
       "id": "src_extractors_extractimages",
       "community": 4,
       "norm_label": "extractimages()"
@@ -853,7 +853,7 @@
       "label": "extractVideoUrl()",
       "file_type": "code",
       "source_file": "src/extractors.js",
-      "source_location": "L148",
+      "source_location": "L160",
       "id": "src_extractors_extractvideourl",
       "community": 4,
       "norm_label": "extractvideourl()"
@@ -862,7 +862,7 @@
       "label": "extractFeatureBullets()",
       "file_type": "code",
       "source_file": "src/extractors.js",
-      "source_location": "L159",
+      "source_location": "L171",
       "id": "src_extractors_extractfeaturebullets",
       "community": 4,
       "norm_label": "extractfeaturebullets()"
@@ -871,7 +871,7 @@
       "label": "extractDescription()",
       "file_type": "code",
       "source_file": "src/extractors.js",
-      "source_location": "L164",
+      "source_location": "L176",
       "id": "src_extractors_extractdescription",
       "community": 4,
       "norm_label": "extractdescription()"
@@ -880,7 +880,7 @@
       "label": "extractAPlus()",
       "file_type": "code",
       "source_file": "src/extractors.js",
-      "source_location": "L170",
+      "source_location": "L182",
       "id": "src_extractors_extractaplus",
       "community": 4,
       "norm_label": "extractaplus()"
@@ -889,7 +889,7 @@
       "label": "extractProductDetails()",
       "file_type": "code",
       "source_file": "src/extractors.js",
-      "source_location": "L183",
+      "source_location": "L195",
       "id": "src_extractors_extractproductdetails",
       "community": 4,
       "norm_label": "extractproductdetails()"
@@ -898,7 +898,7 @@
       "label": "extractItemDetails()",
       "file_type": "code",
       "source_file": "src/extractors.js",
-      "source_location": "L225",
+      "source_location": "L237",
       "id": "src_extractors_extractitemdetails",
       "community": 4,
       "norm_label": "extractitemdetails()"
@@ -907,7 +907,7 @@
       "label": "extractRating()",
       "file_type": "code",
       "source_file": "src/extractors.js",
-      "source_location": "L247",
+      "source_location": "L259",
       "id": "src_extractors_extractrating",
       "community": 5,
       "norm_label": "extractrating()"
@@ -916,7 +916,7 @@
       "label": "extractReviewCount()",
       "file_type": "code",
       "source_file": "src/extractors.js",
-      "source_location": "L254",
+      "source_location": "L266",
       "id": "src_extractors_extractreviewcount",
       "community": 5,
       "norm_label": "extractreviewcount()"
@@ -925,7 +925,7 @@
       "label": "extractBSR()",
       "file_type": "code",
       "source_file": "src/extractors.js",
-      "source_location": "L265",
+      "source_location": "L277",
       "id": "src_extractors_extractbsr",
       "community": 4,
       "norm_label": "extractbsr()"
@@ -934,7 +934,7 @@
       "label": "extractAvailability()",
       "file_type": "code",
       "source_file": "src/extractors.js",
-      "source_location": "L295",
+      "source_location": "L307",
       "id": "src_extractors_extractavailability",
       "community": 5,
       "norm_label": "extractavailability()"
@@ -943,7 +943,7 @@
       "label": "extractSoldBy()",
       "file_type": "code",
       "source_file": "src/extractors.js",
-      "source_location": "L300",
+      "source_location": "L312",
       "id": "src_extractors_extractsoldby",
       "community": 5,
       "norm_label": "extractsoldby()"
@@ -952,7 +952,7 @@
       "label": "extractFulfilledBy()",
       "file_type": "code",
       "source_file": "src/extractors.js",
-      "source_location": "L304",
+      "source_location": "L324",
       "id": "src_extractors_extractfulfilledby",
       "community": 4,
       "norm_label": "extractfulfilledby()"
@@ -961,16 +961,34 @@
       "label": "extractDeliveryInfo()",
       "file_type": "code",
       "source_file": "src/extractors.js",
-      "source_location": "L314",
+      "source_location": "L348",
       "id": "src_extractors_extractdeliveryinfo",
       "community": 5,
       "norm_label": "extractdeliveryinfo()"
     },
     {
+      "label": "extractUserGuide()",
+      "file_type": "code",
+      "source_file": "src/extractors.js",
+      "source_location": "L368",
+      "id": "src_extractors_extractuserguide",
+      "community": 4,
+      "norm_label": "extractuserguide()"
+    },
+    {
+      "label": "extractImportantInfo()",
+      "file_type": "code",
+      "source_file": "src/extractors.js",
+      "source_location": "L379",
+      "id": "src_extractors_extractimportantinfo",
+      "community": 4,
+      "norm_label": "extractimportantinfo()"
+    },
+    {
       "label": "extractBreadcrumbs()",
       "file_type": "code",
       "source_file": "src/extractors.js",
-      "source_location": "L320",
+      "source_location": "L390",
       "id": "src_extractors_extractbreadcrumbs",
       "community": 4,
       "norm_label": "extractbreadcrumbs()"
@@ -979,7 +997,7 @@
       "label": "parseMeasurements()",
       "file_type": "code",
       "source_file": "src/extractors.js",
-      "source_location": "L333",
+      "source_location": "L403",
       "id": "src_extractors_parsemeasurements",
       "community": 4,
       "norm_label": "parsemeasurements()"
@@ -988,7 +1006,7 @@
       "label": "parseWeight()",
       "file_type": "code",
       "source_file": "src/extractors.js",
-      "source_location": "L356",
+      "source_location": "L426",
       "id": "src_extractors_parseweight",
       "community": 4,
       "norm_label": "parseweight()"
@@ -997,7 +1015,7 @@
       "label": "pickField()",
       "file_type": "code",
       "source_file": "src/extractors.js",
-      "source_location": "L369",
+      "source_location": "L439",
       "id": "src_extractors_pickfield",
       "community": 4,
       "norm_label": "pickfield()"
@@ -1057,55 +1075,82 @@
       "norm_label": "alllinks"
     },
     {
+      "label": "grid",
+      "file_type": "code",
+      "source_file": "src/routes.js",
+      "source_location": "L56",
+      "id": "src_routes_grid",
+      "community": 6,
+      "norm_label": "grid"
+    },
+    {
       "label": "seen",
       "file_type": "code",
       "source_file": "src/routes.js",
-      "source_location": "L41",
+      "source_location": "L62",
       "id": "src_routes_seen",
       "community": 6,
       "norm_label": "seen"
     },
     {
+      "label": "containers",
+      "file_type": "code",
+      "source_file": "src/routes.js",
+      "source_location": "L66",
+      "id": "src_routes_containers",
+      "community": 6,
+      "norm_label": "containers"
+    },
+    {
       "label": "results",
       "file_type": "code",
       "source_file": "src/routes.js",
-      "source_location": "L42",
+      "source_location": "L79",
       "id": "src_routes_results",
       "community": 6,
       "norm_label": "results"
     },
     {
-      "label": "a",
+      "label": "m",
       "file_type": "code",
       "source_file": "src/routes.js",
-      "source_location": "L55",
-      "id": "src_routes_a",
+      "source_location": "L81",
+      "id": "src_routes_m",
       "community": 6,
-      "norm_label": "a"
-    },
-    {
-      "label": "btn",
-      "file_type": "code",
-      "source_file": "src/routes.js",
-      "source_location": "L72",
-      "id": "src_routes_btn",
-      "community": 6,
-      "norm_label": "btn"
+      "norm_label": "m"
     },
     {
       "label": "asin",
       "file_type": "code",
       "source_file": "src/routes.js",
-      "source_location": "L193",
+      "source_location": "L83",
       "id": "src_routes_asin",
       "community": 6,
       "norm_label": "asin"
     },
     {
+      "label": "next",
+      "file_type": "code",
+      "source_file": "src/routes.js",
+      "source_location": "L96",
+      "id": "src_routes_next",
+      "community": 6,
+      "norm_label": "next"
+    },
+    {
+      "label": "btn",
+      "file_type": "code",
+      "source_file": "src/routes.js",
+      "source_location": "L113",
+      "id": "src_routes_btn",
+      "community": 6,
+      "norm_label": "btn"
+    },
+    {
       "label": "measurements",
       "file_type": "code",
       "source_file": "src/routes.js",
-      "source_location": "L194",
+      "source_location": "L240",
       "id": "src_routes_measurements",
       "community": 6,
       "norm_label": "measurements"
@@ -1114,7 +1159,7 @@
       "label": "weight",
       "file_type": "code",
       "source_file": "src/routes.js",
-      "source_location": "L195",
+      "source_location": "L241",
       "id": "src_routes_weight",
       "community": 6,
       "norm_label": "weight"
@@ -1123,7 +1168,7 @@
       "label": "product",
       "file_type": "code",
       "source_file": "src/routes.js",
-      "source_location": "L197",
+      "source_location": "L243",
       "id": "src_routes_product",
       "community": 6,
       "norm_label": "product"
@@ -1132,7 +1177,7 @@
       "label": "_logFailedAsin()",
       "file_type": "code",
       "source_file": "src/routes.js",
-      "source_location": "L265",
+      "source_location": "L331",
       "id": "src_routes_logfailedasin",
       "community": 7,
       "norm_label": "_logfailedasin()"
@@ -1159,7 +1204,7 @@
       "label": "PDP",
       "file_type": "code",
       "source_file": "src/selectors.js",
-      "source_location": "L22",
+      "source_location": "L21",
       "id": "src_selectors_pdp",
       "community": 12,
       "norm_label": "pdp"
@@ -1226,6 +1271,15 @@
       "id": "readme_md",
       "community": 13,
       "norm_label": "readme.md"
+    },
+    {
+      "label": "a",
+      "file_type": "code",
+      "source_file": "src/routes.js",
+      "source_location": "L55",
+      "community": 6,
+      "norm_label": "a",
+      "id": "src_routes_a"
     },
     {
       "label": "anchor",
@@ -2335,6 +2389,26 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/extractors.js",
+      "source_location": "L368",
+      "weight": 1.0,
+      "source": "src_extractors_js",
+      "target": "src_extractors_extractuserguide",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/extractors.js",
+      "source_location": "L379",
+      "weight": 1.0,
+      "source": "src_extractors_js",
+      "target": "src_extractors_extractimportantinfo",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/extractors.js",
       "source_location": "L320",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -2535,6 +2609,17 @@
       "confidence_score": 1.0,
       "source": "src_extractors_extractaplus",
       "target": "src_extractors_trytextall"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/extractors.js",
+      "source_location": "L380",
+      "weight": 1.0,
+      "source": "src_extractors_extractimportantinfo",
+      "target": "src_extractors_trytextall",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -2785,6 +2870,28 @@
       "source_file": "src/routes.js",
       "source_location": "L3",
       "weight": 1.0,
+      "source": "src_routes_js",
+      "target": "src_extractors_extractuserguide",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/routes.js",
+      "source_location": "L3",
+      "weight": 1.0,
+      "source": "src_routes_js",
+      "target": "src_extractors_extractimportantinfo",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/routes.js",
+      "source_location": "L3",
+      "weight": 1.0,
       "confidence_score": 1.0,
       "source": "src_routes_js",
       "target": "src_extractors_extractbreadcrumbs"
@@ -2969,9 +3076,9 @@
       "source_file": "src/routes.js",
       "source_location": "L25",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_routes_js",
-      "target": "src_routes_isbestsellers",
-      "confidence_score": 1.0
+      "target": "src_routes_isbestsellers"
     },
     {
       "relation": "contains",
@@ -2979,8 +3086,18 @@
       "source_file": "src/routes.js",
       "source_location": "L29",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_routes_js",
-      "target": "src_routes_alllinks",
+      "target": "src_routes_alllinks"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/routes.js",
+      "source_location": "L56",
+      "weight": 1.0,
+      "source": "src_routes_js",
+      "target": "src_routes_grid",
       "confidence_score": 1.0
     },
     {
@@ -2989,8 +3106,18 @@
       "source_file": "src/routes.js",
       "source_location": "L41",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_routes_js",
-      "target": "src_routes_seen",
+      "target": "src_routes_seen"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/routes.js",
+      "source_location": "L66",
+      "weight": 1.0,
+      "source": "src_routes_js",
+      "target": "src_routes_containers",
       "confidence_score": 1.0
     },
     {
@@ -2999,18 +3126,38 @@
       "source_file": "src/routes.js",
       "source_location": "L42",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_routes_js",
-      "target": "src_routes_results",
+      "target": "src_routes_results"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/routes.js",
+      "source_location": "L81",
+      "weight": 1.0,
+      "source": "src_routes_js",
+      "target": "src_routes_m",
       "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/routes.js",
-      "source_location": "L55",
+      "source_location": "L161",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_routes_js",
+      "target": "src_routes_asin"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/routes.js",
+      "source_location": "L96",
       "weight": 1.0,
       "source": "src_routes_js",
-      "target": "src_routes_a",
+      "target": "src_routes_next",
       "confidence_score": 1.0
     },
     {
@@ -3022,16 +3169,6 @@
       "confidence_score": 1.0,
       "source": "src_routes_js",
       "target": "src_routes_btn"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/routes.js",
-      "source_location": "L161",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "src_routes_js",
-      "target": "src_routes_asin"
     },
     {
       "relation": "contains",
@@ -3072,6 +3209,16 @@
       "confidence_score": 1.0,
       "source": "src_routes_js",
       "target": "src_routes_logfailedasin"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/routes.js",
+      "source_location": "L55",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_routes_js",
+      "target": "src_routes_a"
     },
     {
       "relation": "contains",
@@ -3177,5 +3324,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "dad9e2bdbdedc545bf78276c6881cf89dcbe26dc"
+  "built_at_commit": "97009e44b572624b1d5d163372c69716fa303b20"
 }

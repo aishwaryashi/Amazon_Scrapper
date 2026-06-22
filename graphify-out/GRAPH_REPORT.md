@@ -1,16 +1,16 @@
 # Graph Report - Amazon_Scrapper  (2026-06-22)
 
 ## Corpus Check
-- 9 files · ~3,517 words
+- 9 files · ~4,359 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 138 nodes · 187 edges · 14 communities (13 shown, 1 thin omitted)
+- 144 nodes · 196 edges · 14 communities (13 shown, 1 thin omitted)
 - Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `dad9e2bd`
+- Built from commit: `97009e44`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -36,9 +36,9 @@
 4. `proxyConfiguration` - 6 edges
 5. `categoryUrl` - 5 edges
 6. `maxProducts` - 5 edges
-7. `parseAsin()` - 5 edges
-8. `overview` - 4 edges
-9. `tryTextAll()` - 4 edges
+7. `tryTextAll()` - 5 edges
+8. `parseAsin()` - 5 edges
+9. `overview` - 4 edges
 10. `extractPrice()` - 4 edges
 
 ## Surprising Connections (you probably didn't know these)
@@ -53,7 +53,7 @@
 
 ### Community 0 - "Community 0"
 Cohesion: 0.11
-Nodes (18): description, editor, title, type, default, description, enum, enumTitles (+10 more)
+Nodes (18): description, editor, title, type, default, description, maximum, minimum (+10 more)
 
 ### Community 1 - "Community 1"
 Cohesion: 0.12
@@ -68,16 +68,16 @@ Cohesion: 0.14
 Nodes (14): component, properties, display, asin, availability, brand, currency, discountPercent (+6 more)
 
 ### Community 4 - "Community 4"
-Cohesion: 0.16
-Nodes (14): extractAPlus(), extractBreadcrumbs(), extractBSR(), extractDescription(), extractFeatureBullets(), extractFulfilledBy(), extractImages(), extractItemDetails() (+6 more)
+Cohesion: 0.15
+Nodes (16): extractAPlus(), extractBreadcrumbs(), extractBSR(), extractDescription(), extractFeatureBullets(), extractFulfilledBy(), extractImages(), extractImportantInfo() (+8 more)
 
 ### Community 5 - "Community 5"
 Cohesion: 0.20
 Nodes (10): extractAvailability(), extractBrand(), extractDealBadge(), extractDeliveryInfo(), extractDiscountPercent(), extractRating(), extractReviewCount(), extractSoldBy() (+2 more)
 
 ### Community 6 - "Community 6"
-Cohesion: 0.17
-Nodes (11): a, allLinks, anchor, asin, btn, isBestsellers, measurements, product (+3 more)
+Cohesion: 0.12
+Nodes (15): a, allLinks, anchor, asin, btn, containers, grid, isBestsellers (+7 more)
 
 ### Community 7 - "Community 7"
 Cohesion: 0.28
@@ -93,14 +93,14 @@ Nodes (6): actorInputSchemaVersion, description, required, schemaVersion, title,
 
 ### Community 10 - "Community 10"
 Cohesion: 0.29
-Nodes (7): default, description, maximum, minimum, title, type, maxPages
+Nodes (7): default, description, enum, enumTitles, title, type, locale
 
 ### Community 11 - "Community 11"
 Cohesion: 0.67
 Nodes (3): extractOriginalPrice(), extractPrice(), parsePrice()
 
 ## Knowledge Gaps
-- **77 isolated node(s):** `name`, `version`, `type`, `description`, `main` (+72 more)
+- **81 isolated node(s):** `name`, `version`, `type`, `description`, `main` (+76 more)
   These have ≤1 connection - possible missing edges or undocumented components.
 - **1 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
@@ -108,11 +108,11 @@ Nodes (3): extractOriginalPrice(), extractPrice(), parsePrice()
 _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `properties` connect `Community 0` to `Community 8`, `Community 9`, `Community 10`?**
-  _High betweenness centrality (0.068) - this node is a cross-community bridge._
+  _High betweenness centrality (0.062) - this node is a cross-community bridge._
 - **Why does `overview` connect `Community 1` to `Community 3`?**
-  _High betweenness centrality (0.027) - this node is a cross-community bridge._
+  _High betweenness centrality (0.024) - this node is a cross-community bridge._
 - **What connects `name`, `version`, `type` to the rest of the system?**
-  _77 weakly-connected nodes found - possible documentation gaps or missing edges._
+  _81 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `Community 0` be split into smaller, more focused modules?**
   _Cohesion score 0.1111111111111111 - nodes in this community are weakly interconnected._
 - **Should `Community 1` be split into smaller, more focused modules?**
