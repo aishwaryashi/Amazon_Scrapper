@@ -32,15 +32,27 @@ const crawler = new PlaywrightCrawler({
   proxyConfiguration,
   requestHandler: router,
 
-  // Allow enough time for lazy-loaded sections to render
   requestHandlerTimeoutSecs: 90,
   navigationTimeoutSecs:     45,
+  maxConcurrency:            3,
 
-  // Conservative concurrency to stay under Amazon's rate limits
-  maxConcurrency: 3,
+  // Retry twice so bot-blocked pages get a fresh session + fingerprint
+  maxRequestRetries: 2,
 
-  // Retry once before marking a request as failed
-  maxRequestRetries: 1,
+  // Rotate browser fingerprints (UA, viewport, platform, language) per session.
+  // This is the primary anti-detection mechanism — do NOT set User-Agent manually
+  // via setExtraHTTPHeaders, as Playwright ignores that header.
+  browserPoolOptions: {
+    useFingerprints: true,
+    fingerprintOptions: {
+      fingerprintGeneratorOptions: {
+        browsers:  ['chrome'],
+        devices:   ['desktop'],
+        operatingSystems: ['windows', 'macos'],
+        locales:   [locale],
+      },
+    },
+  },
 
   launchContext: {
     launchOptions: {
@@ -50,34 +62,36 @@ const crawler = new PlaywrightCrawler({
         '--disable-setuid-sandbox',
         '--disable-dev-shm-usage',
         '--disable-gpu',
-        '--disable-extensions',
+        '--disable-blink-features=AutomationControlled',
         '--window-size=1280,900',
       ],
     },
   },
 
-  // Spoof realistic browser headers on every request
+  // Set only the headers that fingerprint-generator does not control
   preNavigationHooks: [
     async ({ page, request }) => {
       const reqLocale = request.userData?.locale ?? locale;
       await page.setExtraHTTPHeaders({
-        'Accept-Language':          `${reqLocale},en;q=0.9`,
-        'Accept':                   'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
-        'Accept-Encoding':          'gzip, deflate, br',
-        'Cache-Control':            'no-cache',
-        'Pragma':                   'no-cache',
-        'Upgrade-Insecure-Requests':'1',
-        'sec-ch-ua':                '"Chromium";v="124","Google Chrome";v="124","Not-A.Brand";v="99"',
-        'sec-ch-ua-mobile':         '?0',
-        'sec-ch-ua-platform':       '"Windows"',
-        'Sec-Fetch-Dest':           'document',
-        'Sec-Fetch-Mode':           'navigate',
-        'Sec-Fetch-Site':           'none',
+        'Accept-Language':           `${reqLocale},en;q=0.9`,
+        'Accept':                    'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
+        'Accept-Encoding':           'gzip, deflate, br',
+        'Cache-Control':             'no-cache',
+        'Pragma':                    'no-cache',
+        'Upgrade-Insecure-Requests': '1',
+        'Sec-Fetch-Dest':            'document',
+        'Sec-Fetch-Mode':            'navigate',
+        'Sec-Fetch-Site':            'none',
+      });
+
+      // Hide the webdriver flag that headless Chrome exposes
+      await page.addInitScript(() => {
+        Object.defineProperty(navigator, 'webdriver', { get: () => undefined });
       });
     },
   ],
 
-  // Log every failure and record the ASIN to failedAsins in the KV-store
+  // Log every permanently-failed request and record its ASIN
   failedRequestHandler: async ({ request, log }) => {
     log.error(`[FAILED] ${request.url} — ${request.errorMessages?.at(-1) ?? 'unknown error'}`);
     const store = await KeyValueStore.open();
@@ -92,9 +106,8 @@ const crawler = new PlaywrightCrawler({
   },
 });
 
-// ─── Run ─────────────────────────────────────────────────────────────────────
+// ─── Run ──────────────────────────────────────────────────────────────────────
 
-// Initialise shared counter used by the LISTING handler
 const store = await KeyValueStore.open();
 await store.setValue('enqueuedCount', 0);
 await store.setValue('failedAsins', []);
@@ -111,8 +124,8 @@ await crawler.run([
 
 // ─── Summary ──────────────────────────────────────────────────────────────────
 
-const failedAsins = (await store.getValue('failedAsins')) ?? [];
-const dataset     = await Actor.openDataset();
+const failedAsins   = (await store.getValue('failedAsins')) ?? [];
+const dataset       = await Actor.openDataset();
 const { itemCount } = await dataset.getInfo();
 
 console.log(`\nCrawl complete.`);
@@ -120,7 +133,6 @@ console.log(`  Products saved : ${itemCount}`);
 console.log(`  Failed ASINs   : ${failedAsins.length ? failedAsins.join(', ') : 'none'}`);
 
 if (failedAsins.length) {
-  // Persist failed ASINs as a named KV entry so they're visible in the Actor run output
   await Actor.setValue('OUTPUT_FAILED_ASINS', failedAsins);
 }
 

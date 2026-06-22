@@ -43,8 +43,20 @@ export async function extractTitle(page) {
 export async function extractBrand(page) {
   const raw = await tryText(page, PDP.brand);
   if (!raw) return null;
-  // Strip "Visit the … Store", "Brand: ", "by " prefixes
-  return raw.replace(/^(Visit the\s+.+\s+Store|Brand\s*[:\u200F\u200E]\s*|by\s+)/i, '').trim() || null;
+
+  // "Visit the Babique Store"  →  "Babique"
+  const storeMatch = raw.match(/^Visit the\s+(.+?)\s+Store$/i);
+  if (storeMatch) return storeMatch[1].trim();
+
+  // "Brand: Babique" / zero-width variants Amazon uses
+  const brandMatch = raw.match(/^Brand[\s\u200F\u200E]*[:]+[\s\u200F\u200E]*(.+)$/i);
+  if (brandMatch) return brandMatch[1].trim();
+
+  // "by SellerName"
+  const byMatch = raw.match(/^by\s+(.+)$/i);
+  if (byMatch) return byMatch[1].trim();
+
+  return raw.trim() || null;
 }
 
 // ─── Pricing ──────────────────────────────────────────────────────────────────
@@ -298,21 +310,79 @@ export async function extractAvailability(page) {
 }
 
 export async function extractSoldBy(page) {
-  return (await tryText(page, PDP.soldBy)) ?? null;
-}
-
-export async function extractFulfilledBy(page) {
-  const raw = await page.evaluate(() => {
-    const el = document.querySelector('#fulfilledByThirdParty, #merchant-info');
-    return el ? el.textContent.trim() : null;
-  });
+  const raw = await tryText(page, PDP.soldBy);
   if (!raw) return null;
-  if (/amazon/i.test(raw)) return 'Amazon';
-  return raw.replace(/\s+/g, ' ').trim();
+  // Strip stray "Sold by:" prefix that appears in some layouts
+  return raw.replace(/^Sold by\s*[:]\s*/i, '').trim() || null;
 }
 
+/**
+ * Read the "Ships from" cell of the tabular buy-box (Amazon IN layout) or fall
+ * back to the legacy #merchant-info element.  Returns "Amazon" when fulfilled
+ * by Amazon, the third-party name otherwise.
+ */
+export async function extractFulfilledBy(page) {
+  // Try the modern tabular buy-box first (Amazon IN toys / most 2024+ PDPs)
+  const tabular = await page.evaluate(() => {
+    const shipsFrom = document.querySelector(
+      '#tabular-buybox [tabular-attribute-name="Ships from"] .tabular-buybox-text',
+    );
+    if (shipsFrom) return shipsFrom.textContent.trim();
+
+    // Fallback: legacy elements
+    const legacy = document.querySelector('#fulfilledByThirdParty, #merchant-info');
+    return legacy ? legacy.textContent.trim() : null;
+  });
+
+  if (!tabular) return null;
+  // Normalise "Amazon" / "amazon.in" / "Fulfilled by Amazon" → "Amazon"
+  if (/amazon/i.test(tabular)) return 'Amazon';
+  return tabular.replace(/\s+/g, ' ').trim();
+}
+
+/**
+ * Extract the first meaningful delivery estimate sentence.
+ * The modern slot-based block (#mir-layout-DELIVERY_BLOCK-slot-DELIVERY_MESSAGE)
+ * contains multiple child spans; we grab its full trimmed text.
+ */
 export async function extractDeliveryInfo(page) {
-  return (await tryText(page, PDP.deliveryInfo)) ?? null;
+  const selectors = PDP.deliveryInfo;
+  const list = Array.isArray(selectors) ? selectors : [selectors];
+
+  for (const sel of list) {
+    try {
+      const el = await page.$(sel);
+      if (el) {
+        const text = (await el.textContent())?.replace(/\s+/g, ' ').trim();
+        if (text) return text;
+      }
+    } catch { /* continue */ }
+  }
+  return null;
+}
+
+/**
+ * User Guide — returns the href of the downloadable guide PDF if present.
+ * Appears as a link inside #user-guide_feature_div on applicable products.
+ */
+export async function extractUserGuide(page) {
+  return await page.evaluate(() => {
+    const a = document.querySelector('#user-guide_feature_div a[href]');
+    return a ? a.getAttribute('href').trim() : null;
+  });
+}
+
+/**
+ * Important Information / Safety warnings section.
+ * Amazon uses this for mandatory compliance text (age warnings, choking hazard, etc.).
+ */
+export async function extractImportantInfo(page) {
+  const texts = await tryTextAll(page, [
+    '#important-information .a-section',
+    '#important_information .a-section',
+  ]);
+  if (!texts.length) return null;
+  return texts.join('\n').replace(/\s+/g, ' ').trim() || null;
 }
 
 // ─── Breadcrumbs ─────────────────────────────────────────────────────────────

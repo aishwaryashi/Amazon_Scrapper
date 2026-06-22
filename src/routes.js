@@ -8,7 +8,7 @@ import {
   extractProductDetails, extractItemDetails,
   extractRating, extractReviewCount, extractBSR,
   extractAvailability, extractSoldBy, extractFulfilledBy, extractDeliveryInfo,
-  extractBreadcrumbs,
+  extractBreadcrumbs, extractUserGuide, extractImportantInfo,
   parseMeasurements, parseWeight, pickField,
 } from './extractors.js';
 import { parseAsin, currencyFor, randomDelay, canonicalUrl } from './utils.js';
@@ -124,24 +124,27 @@ router.addHandler('PDP', async ({ page, request, pushData, log }) => {
   const { locale } = request.userData;
   const url = request.url;
 
-  log.info(`[PDP] ${url}`);
+  const pageTitle = await page.title();
+  log.info(`[PDP] "${pageTitle}" — ${url}`);
 
-  // Detect CAPTCHA / bot-block pages
+  // Detect CAPTCHA / bot-block.
+  // IMPORTANT: throw (don't return) so Crawlee retries with a new session + fingerprint.
   const blocked = await page.evaluate(() =>
     document.title.includes('Robot Check') ||
     document.title.includes('CAPTCHA') ||
-    !!document.querySelector('form[action*="captcha"]'),
+    document.title.includes('Sorry') ||
+    !!document.querySelector('form[action*="captcha"]') ||
+    !!document.querySelector('#captchacharacters'),
   );
 
   if (blocked) {
-    log.warning(`[PDP] Bot-block detected — skipping ${url}`);
-    await _logFailedAsin(url);
-    return;
+    log.warning(`[PDP] Bot-block/CAPTCHA detected (title: "${pageTitle}") — will retry`);
+    throw new Error(`Bot-block on ${url}`);   // triggers Crawlee retry with fresh session
   }
 
   // Wait for the product title or the main DP wrapper
   await page.waitForSelector('#productTitle, #dp', { timeout: 20_000 }).catch(() => {
-    log.warning(`[PDP] Timeout waiting for page content: ${url}`);
+    log.warning(`[PDP] Timeout waiting for page content on: ${url}`);
   });
 
   // Expand collapsed accordion sections (product details, tech specs, etc.)
@@ -162,11 +165,11 @@ router.addHandler('PDP', async ({ page, request, pushData, log }) => {
     title, brand,
     price, originalPrice, discountPercent, dealBadge,
     imageUrls, videoUrl,
-    featuresBullets, description, aPlus,
+    featuresBullets, productDescriptionText, aPlus,
     itemDetails,
     rating, reviewCount, bestSellerRank,
     availability, soldBy, fulfilledBy, deliveryInfo,
-    category,
+    category, userGuide, importantInfo,
   ] = await Promise.all([
     extractTitle(page),
     extractBrand(page),
@@ -176,9 +179,9 @@ router.addHandler('PDP', async ({ page, request, pushData, log }) => {
     extractDealBadge(page),
     extractImages(page),
     extractVideoUrl(page),
-    extractFeatureBullets(page),
-    extractDescription(page),
-    extractAPlus(page),
+    extractFeatureBullets(page),    // "About this item" bullet points
+    extractDescription(page),       // #productDescription long-form text
+    extractAPlus(page),             // "From the manufacturer" / A+ content
     extractItemDetails(page),
     extractRating(page),
     extractReviewCount(page),
@@ -188,62 +191,84 @@ router.addHandler('PDP', async ({ page, request, pushData, log }) => {
     extractFulfilledBy(page),
     extractDeliveryInfo(page),
     extractBreadcrumbs(page),
+    extractUserGuide(page),         // downloadable PDF guide URL
+    extractImportantInfo(page),     // safety / legal warnings
   ]);
 
-  const asin = parseAsin(url);
+  const asin         = parseAsin(url);
   const measurements = parseMeasurements(productDetails);
-  const weight = parseWeight(productDetails);
+  const weight       = parseWeight(productDetails);
 
   const product = {
-    // ── Core Identity
+    // ── Core Identity ──────────────────────────────────────────────────────
     asin,
     title,
     brand,
     productUrl: canonicalUrl(url),
 
-    // ── Media
-    imageUrls:  imageUrls?.length ? imageUrls : null,
+    // ── Media ─────────────────────────────────────────────────────────────
+    // imageUrls: full hi-res gallery (main + all carousel images)
+    imageUrls: imageUrls?.length ? imageUrls : null,
     videoUrl,
 
-    // ── Pricing
+    // ── Pricing ───────────────────────────────────────────────────────────
     price,
     currency:        currencyFor(locale),
-    originalPrice,
+    originalPrice,   // M.R.P. / list price before discount
     discountPercent,
-    dealBadge,
+    dealBadge,       // "Lightning Deal", "Coupon", etc. — null if none
 
-    // ── Description & Content
-    description:     featuresBullets ?? (description ? [description] : null),
+    // ── Features & Description ────────────────────────────────────────────
+    // description    : "About this item" bullet array (per schema spec)
+    // featuresBullets: same bullets (explicit alias for clarity)
+    // productDescription : long-form text from the #productDescription section
+    description:          featuresBullets,
+    featuresBullets,
+    productDescription:   productDescriptionText,
+
+    // ── Product Details / Technical Specs ─────────────────────────────────
+    // productDetails : merged key→value from all spec tables + detail bullets
+    // itemDetails    : key→value from the "Item details" accordion section
     productDetails,
     itemDetails,
-    featuresBullets,
+
+    // ── A+ / From the Manufacturer ────────────────────────────────────────
     aPlus,
 
-    // ── Specifications
-    measurements,
-    weight,
-    style:            pickField(productDetails, 'Style', 'Colour', 'Color', 'Size'),
-    material:         pickField(productDetails, 'Material', 'Material Type', 'Fabric', 'Material Composition'),
-    careInstructions: pickField(productDetails, 'Care Instructions', 'Care instructions', 'Care Instruction'),
+    // ── User Guide ────────────────────────────────────────────────────────
+    userGuide,         // URL to downloadable PDF guide, or null
 
-    // ── Categorisation
-    category:         category?.length ? category : null,
-    ageRange:         pickField(productDetails, 'Age Range', 'Recommended Age', 'Age range'),
-    manufacturer:     pickField(productDetails, 'Manufacturer', 'Brand'),
-    countryOfOrigin:  pickField(productDetails, 'Country of Origin', 'Country Of Origin'),
+    // ── Important / Safety Information ────────────────────────────────────
+    importantInfo,     // age warnings, choking hazard text, compliance notes
 
-    // ── Ratings & Social Proof
+    // ── Specifications (derived from productDetails) ───────────────────────
+    measurements,      // { length, width, height, unit }
+    weight,            // { value, unit }
+    style:            pickField(productDetails, 'Style', 'Colour', 'Color', 'Size', 'Pattern'),
+    material:         pickField(productDetails, 'Material', 'Material Type', 'Fabric',
+                                'Material Composition', 'Filling Material'),
+    careInstructions: pickField(productDetails, 'Care Instructions', 'Care instructions',
+                                'Care Instruction', 'Washing Instructions'),
+
+    // ── Categorisation ────────────────────────────────────────────────────
+    category:        category?.length ? category : null,
+    ageRange:        pickField(productDetails, 'Age Range', 'Recommended Age',
+                               'Age range', 'Age Recommendation'),
+    manufacturer:    pickField(productDetails, 'Manufacturer', 'Brand'),
+    countryOfOrigin: pickField(productDetails, 'Country of Origin', 'Country Of Origin'),
+
+    // ── Ratings & Social Proof ────────────────────────────────────────────
     rating,
     reviewCount,
-    bestSellerRank,
+    bestSellerRank,  // [{ rank, category }, ...]
 
-    // ── Logistics
+    // ── Logistics ─────────────────────────────────────────────────────────
     availability,
     soldBy,
     fulfilledBy,
     deliveryInfo,
 
-    // ── Meta
+    // ── Meta ──────────────────────────────────────────────────────────────
     scrapedAt: new Date().toISOString(),
     locale,
   };
