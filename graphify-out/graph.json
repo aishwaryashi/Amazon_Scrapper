@@ -898,7 +898,7 @@
       "label": "extractItemDetails()",
       "file_type": "code",
       "source_file": "src/extractors.js",
-      "source_location": "L237",
+      "source_location": "L241",
       "id": "src_extractors_extractitemdetails",
       "community": 4,
       "norm_label": "extractitemdetails()"
@@ -907,7 +907,7 @@
       "label": "extractRating()",
       "file_type": "code",
       "source_file": "src/extractors.js",
-      "source_location": "L259",
+      "source_location": "L263",
       "id": "src_extractors_extractrating",
       "community": 5,
       "norm_label": "extractrating()"
@@ -916,7 +916,7 @@
       "label": "extractReviewCount()",
       "file_type": "code",
       "source_file": "src/extractors.js",
-      "source_location": "L266",
+      "source_location": "L270",
       "id": "src_extractors_extractreviewcount",
       "community": 5,
       "norm_label": "extractreviewcount()"
@@ -925,7 +925,7 @@
       "label": "extractBSR()",
       "file_type": "code",
       "source_file": "src/extractors.js",
-      "source_location": "L277",
+      "source_location": "L281",
       "id": "src_extractors_extractbsr",
       "community": 4,
       "norm_label": "extractbsr()"
@@ -934,7 +934,7 @@
       "label": "extractAvailability()",
       "file_type": "code",
       "source_file": "src/extractors.js",
-      "source_location": "L307",
+      "source_location": "L311",
       "id": "src_extractors_extractavailability",
       "community": 5,
       "norm_label": "extractavailability()"
@@ -943,7 +943,7 @@
       "label": "extractSoldBy()",
       "file_type": "code",
       "source_file": "src/extractors.js",
-      "source_location": "L312",
+      "source_location": "L316",
       "id": "src_extractors_extractsoldby",
       "community": 5,
       "norm_label": "extractsoldby()"
@@ -952,7 +952,7 @@
       "label": "extractFulfilledBy()",
       "file_type": "code",
       "source_file": "src/extractors.js",
-      "source_location": "L324",
+      "source_location": "L328",
       "id": "src_extractors_extractfulfilledby",
       "community": 4,
       "norm_label": "extractfulfilledby()"
@@ -961,7 +961,7 @@
       "label": "extractDeliveryInfo()",
       "file_type": "code",
       "source_file": "src/extractors.js",
-      "source_location": "L348",
+      "source_location": "L352",
       "id": "src_extractors_extractdeliveryinfo",
       "community": 5,
       "norm_label": "extractdeliveryinfo()"
@@ -970,7 +970,7 @@
       "label": "extractUserGuide()",
       "file_type": "code",
       "source_file": "src/extractors.js",
-      "source_location": "L368",
+      "source_location": "L372",
       "id": "src_extractors_extractuserguide",
       "community": 4,
       "norm_label": "extractuserguide()"
@@ -979,7 +979,7 @@
       "label": "extractImportantInfo()",
       "file_type": "code",
       "source_file": "src/extractors.js",
-      "source_location": "L379",
+      "source_location": "L383",
       "id": "src_extractors_extractimportantinfo",
       "community": 4,
       "norm_label": "extractimportantinfo()"
@@ -988,7 +988,7 @@
       "label": "extractBreadcrumbs()",
       "file_type": "code",
       "source_file": "src/extractors.js",
-      "source_location": "L390",
+      "source_location": "L394",
       "id": "src_extractors_extractbreadcrumbs",
       "community": 4,
       "norm_label": "extractbreadcrumbs()"
@@ -997,7 +997,7 @@
       "label": "parseMeasurements()",
       "file_type": "code",
       "source_file": "src/extractors.js",
-      "source_location": "L403",
+      "source_location": "L407",
       "id": "src_extractors_parsemeasurements",
       "community": 4,
       "norm_label": "parsemeasurements()"
@@ -1006,7 +1006,7 @@
       "label": "parseWeight()",
       "file_type": "code",
       "source_file": "src/extractors.js",
-      "source_location": "L426",
+      "source_location": "L430",
       "id": "src_extractors_parseweight",
       "community": 4,
       "norm_label": "parseweight()"
@@ -1015,7 +1015,7 @@
       "label": "pickField()",
       "file_type": "code",
       "source_file": "src/extractors.js",
-      "source_location": "L439",
+      "source_location": "L443",
       "id": "src_extractors_pickfield",
       "community": 4,
       "norm_label": "pickfield()"
@@ -1147,10 +1147,19 @@
       "norm_label": "btn"
     },
     {
+      "label": "expandAll()",
+      "file_type": "code",
+      "source_file": "src/routes.js",
+      "source_location": "L194",
+      "id": "src_routes_expandall",
+      "community": 6,
+      "norm_label": "expandall()"
+    },
+    {
       "label": "measurements",
       "file_type": "code",
       "source_file": "src/routes.js",
-      "source_location": "L240",
+      "source_location": "L243",
       "id": "src_routes_measurements",
       "community": 6,
       "norm_label": "measurements"
@@ -1159,7 +1168,7 @@
       "label": "weight",
       "file_type": "code",
       "source_file": "src/routes.js",
-      "source_location": "L241",
+      "source_location": "L244",
       "id": "src_routes_weight",
       "community": 6,
       "norm_label": "weight"
@@ -1168,7 +1177,7 @@
       "label": "product",
       "file_type": "code",
       "source_file": "src/routes.js",
-      "source_location": "L243",
+      "source_location": "L246",
       "id": "src_routes_product",
       "community": 6,
       "norm_label": "product"
@@ -1177,7 +1186,7 @@
       "label": "_logFailedAsin()",
       "file_type": "code",
       "source_file": "src/routes.js",
-      "source_location": "L331",
+      "source_location": "L336",
       "id": "src_routes_logfailedasin",
       "community": 7,
       "norm_label": "_logfailedasin()"
@@ -2391,9 +2400,9 @@
       "source_file": "src/extractors.js",
       "source_location": "L368",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_extractors_js",
-      "target": "src_extractors_extractuserguide",
-      "confidence_score": 1.0
+      "target": "src_extractors_extractuserguide"
     },
     {
       "relation": "contains",
@@ -2401,9 +2410,9 @@
       "source_file": "src/extractors.js",
       "source_location": "L379",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_extractors_js",
-      "target": "src_extractors_extractimportantinfo",
-      "confidence_score": 1.0
+      "target": "src_extractors_extractimportantinfo"
     },
     {
       "relation": "contains",
@@ -2617,9 +2626,9 @@
       "source_file": "src/extractors.js",
       "source_location": "L380",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_extractors_extractimportantinfo",
-      "target": "src_extractors_trytextall",
-      "confidence_score": 1.0
+      "target": "src_extractors_trytextall"
     },
     {
       "relation": "imports",
@@ -2870,9 +2879,9 @@
       "source_file": "src/routes.js",
       "source_location": "L3",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_routes_js",
-      "target": "src_extractors_extractuserguide",
-      "confidence_score": 1.0
+      "target": "src_extractors_extractuserguide"
     },
     {
       "relation": "imports",
@@ -2881,9 +2890,9 @@
       "source_file": "src/routes.js",
       "source_location": "L3",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_routes_js",
-      "target": "src_extractors_extractimportantinfo",
-      "confidence_score": 1.0
+      "target": "src_extractors_extractimportantinfo"
     },
     {
       "relation": "imports",
@@ -3096,9 +3105,9 @@
       "source_file": "src/routes.js",
       "source_location": "L56",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_routes_js",
-      "target": "src_routes_grid",
-      "confidence_score": 1.0
+      "target": "src_routes_grid"
     },
     {
       "relation": "contains",
@@ -3116,9 +3125,9 @@
       "source_file": "src/routes.js",
       "source_location": "L66",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_routes_js",
-      "target": "src_routes_containers",
-      "confidence_score": 1.0
+      "target": "src_routes_containers"
     },
     {
       "relation": "contains",
@@ -3136,9 +3145,9 @@
       "source_file": "src/routes.js",
       "source_location": "L81",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_routes_js",
-      "target": "src_routes_m",
-      "confidence_score": 1.0
+      "target": "src_routes_m"
     },
     {
       "relation": "contains",
@@ -3156,9 +3165,9 @@
       "source_file": "src/routes.js",
       "source_location": "L96",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_routes_js",
-      "target": "src_routes_next",
-      "confidence_score": 1.0
+      "target": "src_routes_next"
     },
     {
       "relation": "contains",
@@ -3169,6 +3178,16 @@
       "confidence_score": 1.0,
       "source": "src_routes_js",
       "target": "src_routes_btn"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/routes.js",
+      "source_location": "L194",
+      "weight": 1.0,
+      "source": "src_routes_js",
+      "target": "src_routes_expandall",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -3324,5 +3343,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "97009e44b572624b1d5d163372c69716fa303b20"
+  "built_at_commit": "a94e749775ae97c325dc345271e67ca228699cb6"
 }

@@ -188,15 +188,18 @@ router.addHandler('PDP', async ({ page, request, pushData, log }) => {
     log.warning(`[PDP] Timeout waiting for page content on: ${url}`);
   });
 
-  // Expand collapsed accordion sections (product details, tech specs, etc.)
-  await page.evaluate(() => {
+  // Expand accordion sections — two passes to catch nested sub-panels
+  // (e.g. "Additional details" inside #poExpander which is itself inside
+  // the product-information accordion).
+  const expandAll = () => {
     document.querySelectorAll(
       '.a-expander-prompt, [data-action="a-expander-toggle"]',
     ).forEach((el) => { try { el.click(); } catch { /* ignore */ } });
-  }).catch(() => {});
-
-  // Brief wait so newly expanded sections can render
-  await page.waitForTimeout(600);
+  };
+  await page.evaluate(expandAll).catch(() => {});
+  await page.waitForTimeout(1200);   // let first-pass sections render
+  await page.evaluate(expandAll).catch(() => {});
+  await page.waitForTimeout(800);    // let second-pass sub-sections render
 
   // Extract the product details table first — several derived fields depend on it
   const productDetails = await extractProductDetails(page);
@@ -285,7 +288,9 @@ router.addHandler('PDP', async ({ page, request, pushData, log }) => {
     // ── Specifications (derived from productDetails) ───────────────────────
     measurements,      // { length, width, height, unit }
     weight,            // { value, unit }
-    style:            pickField(productDetails, 'Style', 'Colour', 'Color', 'Size', 'Pattern'),
+    // 'Theme' and 'Character' come from the #poExpander "Style" sub-section
+    style:            pickField(productDetails, 'Style', 'Theme', 'Character',
+                                'Colour', 'Color', 'Size', 'Pattern'),
     material:         pickField(productDetails, 'Material', 'Material Type', 'Fabric',
                                 'Material Composition', 'Filling Material'),
     careInstructions: pickField(productDetails, 'Care Instructions', 'Care instructions',

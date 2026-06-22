@@ -199,21 +199,25 @@ export async function extractProductDetails(page) {
 
     const result = {};
 
-    // Table rows (tech spec tables)
+    // Table rows — covers all Amazon IN spec/detail table formats.
+    // Some tables use <th>+<td>, others (e.g. #poExpander) use <td>+<td>,
+    // so we read the first two cells generically instead of th/td.
     const tableSelectors = [
       '#productDetails_techSpec_section_1 tr',
       '#productDetails_techSpec_section_2 tr',
       '#productDetails_db_sections tr',
+      '#poExpander table tr',                   // "Features & Specs" panel (Style, Measurements, etc.)
+      '#productOverview_feature_div table tr',  // Product overview strip (po-* rows)
+      'table.prodDetTable tr',                  // Older catch-all product detail table
     ];
     for (const sel of tableSelectors) {
       document.querySelectorAll(sel).forEach((row) => {
-        const th = row.querySelector('th');
-        const td = row.querySelector('td');
-        if (th && td) {
-          const key = clean(th.textContent).replace(/:$/, '');
-          const val = clean(td.textContent);
-          if (key && val) result[key] = val;
-        }
+        // Accept both th+td and td+td layouts
+        const cells = row.querySelectorAll('th, td');
+        if (cells.length < 2) return;
+        const key = clean(cells[0].textContent).replace(/:$/, '');
+        const val = clean(cells[1].textContent);
+        if (key && val && !result[key]) result[key] = val; // first-writer wins
       });
     }
 

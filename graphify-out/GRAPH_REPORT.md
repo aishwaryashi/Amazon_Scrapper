@@ -1,16 +1,16 @@
 # Graph Report - Amazon_Scrapper  (2026-06-22)
 
 ## Corpus Check
-- 9 files · ~4,359 words
+- 9 files · ~4,460 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 144 nodes · 196 edges · 14 communities (13 shown, 1 thin omitted)
+- 145 nodes · 197 edges · 14 communities (13 shown, 1 thin omitted)
 - Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `97009e44`
+- Built from commit: `a94e7497`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -108,7 +108,7 @@ Nodes (3): extractOriginalPrice(), extractPrice(), parsePrice()
 _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `properties` connect `Community 0` to `Community 8`, `Community 9`, `Community 10`?**
-  _High betweenness centrality (0.062) - this node is a cross-community bridge._
+  _High betweenness centrality (0.061) - this node is a cross-community bridge._
 - **Why does `overview` connect `Community 1` to `Community 3`?**
   _High betweenness centrality (0.024) - this node is a cross-community bridge._
 - **What connects `name`, `version`, `type` to the rest of the system?**
