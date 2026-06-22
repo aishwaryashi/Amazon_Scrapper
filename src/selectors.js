@@ -6,9 +6,17 @@
  */
 
 export const LISTING = {
+  // ── Standard search / category SERP  (/s?... or /s/...)
   productCard: '[data-component-type="s-search-result"][data-asin]:not([data-asin=""])',
   productLink:  'h2 > a.a-link-normal',
   nextPage:     'a.s-pagination-next:not([aria-disabled="true"]):not(.s-pagination-disabled)',
+
+  // ── Bestsellers / zgbs  (/gp/bestsellers/... or /zgbs/...)
+  // Each <li class="zg-item-immersion"> contains several <a> tags for the same product;
+  // we deduplicate by canonical /dp/ URL in the route handler.
+  bsRoot:       '#zg-ordered-list li, #gridItemRoot li, .zg-item-immersion',
+  bsLink:       '.zg-item-immersion a.a-link-normal[href*="/dp/"]',
+  bsNextPage:   'ul.a-pagination .a-last a',
 };
 
 export const PDP = {

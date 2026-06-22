@@ -19,27 +19,64 @@ export const router = createPlaywrightRouter();
 
 router.addHandler('LISTING', async ({ page, request, enqueueLinks, log }) => {
   const { maxPages, maxProducts, locale, pageNum } = request.userData;
+  const url = request.url;
 
-  log.info(`[LISTING] page ${pageNum}: ${request.url}`);
+  // Detect page layout: Bestsellers (/gp/bestsellers/ or /zgbs/) vs standard search SERP
+  const isBestsellers = /\/(gp\/bestsellers|zgbs)\//.test(url);
 
-  // Wait for at least one product card to appear (up to 15 s)
-  await page.waitForSelector(LISTING.productCard, { timeout: 15_000 }).catch(() => {
-    log.warning(`[LISTING] No product cards found on page ${pageNum}`);
-  });
+  log.info(`[LISTING] page ${pageNum} [${isBestsellers ? 'bestsellers' : 'search'}]: ${url}`);
 
-  // Collect every product href on this page
-  const allLinks = await page.evaluate((sel) => {
-    return Array.from(
-      document.querySelectorAll(sel.productCard),
-    ).map((card) => {
-      const anchor = card.querySelector(sel.productLink);
-      return anchor?.href ?? null;
-    }).filter(Boolean);
-  }, LISTING);
+  let allLinks = [];
+  let nextUrl   = null;
+
+  if (isBestsellers) {
+    // ── Bestsellers layout (/gp/bestsellers/...) ─────────────────────────────
+    // Products live in <li class="zg-item-immersion">; each card has multiple
+    // <a> tags pointing to the same /dp/ URL, so we deduplicate by ASIN.
+    await page.waitForSelector(LISTING.bsRoot, { timeout: 15_000 }).catch(() => {
+      log.warning(`[LISTING] Bestseller items not found on page ${pageNum}`);
+    });
+
+    allLinks = await page.evaluate((bsLink) => {
+      const seen = new Set();
+      const results = [];
+      document.querySelectorAll(bsLink).forEach((a) => {
+        // Strip ref= query params so the same ASIN isn't duplicated
+        const base = a.href.split('?')[0].split('/ref=')[0];
+        if (!seen.has(base)) {
+          seen.add(base);
+          results.push(base);
+        }
+      });
+      return results;
+    }, LISTING.bsLink);
+
+    nextUrl = await page.evaluate((sel) => {
+      const a = document.querySelector(sel);
+      return a ? a.href : null;
+    }, LISTING.bsNextPage);
+
+  } else {
+    // ── Standard search / category SERP (/s?... or /s/...) ──────────────────
+    await page.waitForSelector(LISTING.productCard, { timeout: 15_000 }).catch(() => {
+      log.warning(`[LISTING] No product cards found on page ${pageNum}`);
+    });
+
+    allLinks = await page.evaluate((sel) => {
+      return Array.from(document.querySelectorAll(sel.productCard))
+        .map((card) => card.querySelector(sel.productLink)?.href ?? null)
+        .filter(Boolean);
+    }, LISTING);
+
+    nextUrl = await page.evaluate((sel) => {
+      const btn = document.querySelector(sel.nextPage);
+      return btn ? btn.href : null;
+    }, LISTING);
+  }
 
   log.info(`[LISTING] Found ${allLinks.length} product links on page ${pageNum}`);
 
-  // Honour maxProducts cap using a KV-store counter so concurrent handlers agree
+  // ── Honour maxProducts cap ────────────────────────────────────────────────
   const store = await KeyValueStore.open();
   const enqueuedSoFar = (await store.getValue('enqueuedCount')) ?? 0;
 
@@ -63,14 +100,9 @@ router.addHandler('LISTING', async ({ page, request, enqueueLinks, log }) => {
     log.info(`[LISTING] Enqueued ${linksToQueue.length} PDPs (total: ${enqueuedSoFar + linksToQueue.length})`);
   }
 
-  // Paginate if we haven't hit the page limit or product cap
+  // ── Paginate ──────────────────────────────────────────────────────────────
   const capReached = maxProducts && (enqueuedSoFar + linksToQueue.length) >= maxProducts;
   if (!capReached && pageNum < maxPages) {
-    const nextUrl = await page.evaluate((sel) => {
-      const btn = document.querySelector(sel.nextPage);
-      return btn ? btn.href : null;
-    }, LISTING);
-
     if (nextUrl) {
       await enqueueLinks({
         urls: [nextUrl],
@@ -79,7 +111,7 @@ router.addHandler('LISTING', async ({ page, request, enqueueLinks, log }) => {
       });
       log.info(`[LISTING] Enqueued next page ${pageNum + 1}: ${nextUrl}`);
     } else {
-      log.info('[LISTING] No next page button — category exhausted');
+      log.info('[LISTING] No next page — category exhausted');
     }
   }
 

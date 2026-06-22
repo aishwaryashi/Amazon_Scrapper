@@ -1,16 +1,16 @@
 # Graph Report - Amazon_Scrapper  (2026-06-22)
 
 ## Corpus Check
-- 9 files · ~3,349 words
+- 9 files · ~3,517 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 133 nodes · 182 edges · 14 communities (13 shown, 1 thin omitted)
+- 138 nodes · 187 edges · 14 communities (13 shown, 1 thin omitted)
 - Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `4000c90f`
+- Built from commit: `dad9e2bd`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -68,16 +68,16 @@ Cohesion: 0.14
 Nodes (14): component, properties, display, asin, availability, brand, currency, discountPercent (+6 more)
 
 ### Community 4 - "Community 4"
-Cohesion: 0.21
-Nodes (11): extractAPlus(), extractBSR(), extractDescription(), extractFeatureBullets(), extractFulfilledBy(), extractImages(), extractItemDetails(), parseMeasurements() (+3 more)
+Cohesion: 0.16
+Nodes (14): extractAPlus(), extractBreadcrumbs(), extractBSR(), extractDescription(), extractFeatureBullets(), extractFulfilledBy(), extractImages(), extractItemDetails() (+6 more)
 
 ### Community 5 - "Community 5"
 Cohesion: 0.20
 Nodes (10): extractAvailability(), extractBrand(), extractDealBadge(), extractDeliveryInfo(), extractDiscountPercent(), extractRating(), extractReviewCount(), extractSoldBy() (+2 more)
 
 ### Community 6 - "Community 6"
-Cohesion: 0.20
-Nodes (9): extractBreadcrumbs(), extractProductDetails(), extractVideoUrl(), anchor, asin, btn, measurements, product (+1 more)
+Cohesion: 0.17
+Nodes (11): a, allLinks, anchor, asin, btn, isBestsellers, measurements, product (+3 more)
 
 ### Community 7 - "Community 7"
 Cohesion: 0.28
@@ -100,7 +100,7 @@ Cohesion: 0.67
 Nodes (3): extractOriginalPrice(), extractPrice(), parsePrice()
 
 ## Knowledge Gaps
-- **72 isolated node(s):** `name`, `version`, `type`, `description`, `main` (+67 more)
+- **77 isolated node(s):** `name`, `version`, `type`, `description`, `main` (+72 more)
   These have ≤1 connection - possible missing edges or undocumented components.
 - **1 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
@@ -108,11 +108,11 @@ Nodes (3): extractOriginalPrice(), extractPrice(), parsePrice()
 _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `properties` connect `Community 0` to `Community 8`, `Community 9`, `Community 10`?**
-  _High betweenness centrality (0.073) - this node is a cross-community bridge._
+  _High betweenness centrality (0.068) - this node is a cross-community bridge._
 - **Why does `overview` connect `Community 1` to `Community 3`?**
-  _High betweenness centrality (0.029) - this node is a cross-community bridge._
+  _High betweenness centrality (0.027) - this node is a cross-community bridge._
 - **What connects `name`, `version`, `type` to the rest of the system?**
-  _72 weakly-connected nodes found - possible documentation gaps or missing edges._
+  _77 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `Community 0` be split into smaller, more focused modules?**
   _Cohesion score 0.1111111111111111 - nodes in this community are weakly interconnected._
 - **Should `Community 1` be split into smaller, more focused modules?**

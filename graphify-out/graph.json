@@ -855,7 +855,7 @@
       "source_file": "src/extractors.js",
       "source_location": "L148",
       "id": "src_extractors_extractvideourl",
-      "community": 6,
+      "community": 4,
       "norm_label": "extractvideourl()"
     },
     {
@@ -891,7 +891,7 @@
       "source_file": "src/extractors.js",
       "source_location": "L183",
       "id": "src_extractors_extractproductdetails",
-      "community": 6,
+      "community": 4,
       "norm_label": "extractproductdetails()"
     },
     {
@@ -972,7 +972,7 @@
       "source_file": "src/extractors.js",
       "source_location": "L320",
       "id": "src_extractors_extractbreadcrumbs",
-      "community": 6,
+      "community": 4,
       "norm_label": "extractbreadcrumbs()"
     },
     {
@@ -1039,19 +1039,55 @@
       "norm_label": "router"
     },
     {
-      "label": "anchor",
+      "label": "isBestsellers",
       "file_type": "code",
       "source_file": "src/routes.js",
-      "source_location": "L35",
-      "id": "src_routes_anchor",
+      "source_location": "L25",
+      "id": "src_routes_isbestsellers",
       "community": 6,
-      "norm_label": "anchor"
+      "norm_label": "isbestsellers"
+    },
+    {
+      "label": "allLinks",
+      "file_type": "code",
+      "source_file": "src/routes.js",
+      "source_location": "L29",
+      "id": "src_routes_alllinks",
+      "community": 6,
+      "norm_label": "alllinks"
+    },
+    {
+      "label": "seen",
+      "file_type": "code",
+      "source_file": "src/routes.js",
+      "source_location": "L41",
+      "id": "src_routes_seen",
+      "community": 6,
+      "norm_label": "seen"
+    },
+    {
+      "label": "results",
+      "file_type": "code",
+      "source_file": "src/routes.js",
+      "source_location": "L42",
+      "id": "src_routes_results",
+      "community": 6,
+      "norm_label": "results"
+    },
+    {
+      "label": "a",
+      "file_type": "code",
+      "source_file": "src/routes.js",
+      "source_location": "L55",
+      "id": "src_routes_a",
+      "community": 6,
+      "norm_label": "a"
     },
     {
       "label": "btn",
       "file_type": "code",
       "source_file": "src/routes.js",
-      "source_location": "L70",
+      "source_location": "L72",
       "id": "src_routes_btn",
       "community": 6,
       "norm_label": "btn"
@@ -1060,7 +1096,7 @@
       "label": "asin",
       "file_type": "code",
       "source_file": "src/routes.js",
-      "source_location": "L161",
+      "source_location": "L193",
       "id": "src_routes_asin",
       "community": 6,
       "norm_label": "asin"
@@ -1069,7 +1105,7 @@
       "label": "measurements",
       "file_type": "code",
       "source_file": "src/routes.js",
-      "source_location": "L162",
+      "source_location": "L194",
       "id": "src_routes_measurements",
       "community": 6,
       "norm_label": "measurements"
@@ -1078,7 +1114,7 @@
       "label": "weight",
       "file_type": "code",
       "source_file": "src/routes.js",
-      "source_location": "L163",
+      "source_location": "L195",
       "id": "src_routes_weight",
       "community": 6,
       "norm_label": "weight"
@@ -1087,7 +1123,7 @@
       "label": "product",
       "file_type": "code",
       "source_file": "src/routes.js",
-      "source_location": "L165",
+      "source_location": "L197",
       "id": "src_routes_product",
       "community": 6,
       "norm_label": "product"
@@ -1096,7 +1132,7 @@
       "label": "_logFailedAsin()",
       "file_type": "code",
       "source_file": "src/routes.js",
-      "source_location": "L233",
+      "source_location": "L265",
       "id": "src_routes_logfailedasin",
       "community": 7,
       "norm_label": "_logfailedasin()"
@@ -1123,7 +1159,7 @@
       "label": "PDP",
       "file_type": "code",
       "source_file": "src/selectors.js",
-      "source_location": "L14",
+      "source_location": "L22",
       "id": "src_selectors_pdp",
       "community": 12,
       "norm_label": "pdp"
@@ -1190,6 +1226,15 @@
       "id": "readme_md",
       "community": 13,
       "norm_label": "readme.md"
+    },
+    {
+      "label": "anchor",
+      "file_type": "code",
+      "source_file": "src/routes.js",
+      "source_location": "L35",
+      "community": 6,
+      "norm_label": "anchor",
+      "id": "src_routes_anchor"
     },
     {
       "label": "actorInputSchemaVersion",
@@ -2922,11 +2967,51 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/routes.js",
-      "source_location": "L35",
+      "source_location": "L25",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "src_routes_js",
-      "target": "src_routes_anchor"
+      "target": "src_routes_isbestsellers",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/routes.js",
+      "source_location": "L29",
+      "weight": 1.0,
+      "source": "src_routes_js",
+      "target": "src_routes_alllinks",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/routes.js",
+      "source_location": "L41",
+      "weight": 1.0,
+      "source": "src_routes_js",
+      "target": "src_routes_seen",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/routes.js",
+      "source_location": "L42",
+      "weight": 1.0,
+      "source": "src_routes_js",
+      "target": "src_routes_results",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/routes.js",
+      "source_location": "L55",
+      "weight": 1.0,
+      "source": "src_routes_js",
+      "target": "src_routes_a",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -2987,6 +3072,16 @@
       "confidence_score": 1.0,
       "source": "src_routes_js",
       "target": "src_routes_logfailedasin"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/routes.js",
+      "source_location": "L35",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_routes_js",
+      "target": "src_routes_anchor"
     },
     {
       "relation": "calls",
@@ -3082,5 +3177,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "4000c90f4500b513685f6eb1aecc1baa68773bef"
+  "built_at_commit": "dad9e2bdbdedc545bf78276c6881cf89dcbe26dc"
 }
