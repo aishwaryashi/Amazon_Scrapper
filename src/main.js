@@ -84,9 +84,17 @@ const crawler = new PlaywrightCrawler({
         'Sec-Fetch-Site':            'none',
       });
 
-      // Hide the webdriver flag that headless Chrome exposes
+      // Hide automation signals that headless Chrome exposes
       await page.addInitScript(() => {
         Object.defineProperty(navigator, 'webdriver', { get: () => undefined });
+        // Spoof plugins array (empty in headless Chrome, non-empty in real browsers)
+        Object.defineProperty(navigator, 'plugins', { get: () => [1, 2, 3] });
+        // Spoof languages
+        Object.defineProperty(navigator, 'languages', { get: () => ['en-IN', 'en'] });
+        // Remove the chrome.runtime automation flag
+        if (window.chrome && window.chrome.runtime) {
+          delete window.chrome.runtime.onConnect;
+        }
       });
     },
   ],

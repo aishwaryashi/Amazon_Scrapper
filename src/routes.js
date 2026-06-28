@@ -168,25 +168,48 @@ router.addHandler('PDP', async ({ page, request, pushData, log }) => {
   const pageTitle = await page.title();
   log.info(`[PDP] "${pageTitle}" — ${url}`);
 
-  // Detect CAPTCHA / bot-block.
+  // ── Step 1: title-based bot-block detection ──────────────────────────────
   // IMPORTANT: throw (don't return) so Crawlee retries with a new session + fingerprint.
-  const blocked = await page.evaluate(() =>
+  const titleBlocked = await page.evaluate(() =>
     document.title.includes('Robot Check') ||
     document.title.includes('CAPTCHA') ||
     document.title.includes('Sorry') ||
+    document.title.includes('Just a moment') ||
+    document.title.includes('Page not found') ||
+    document.title.includes('404') ||
     !!document.querySelector('form[action*="captcha"]') ||
     !!document.querySelector('#captchacharacters'),
   );
 
-  if (blocked) {
+  if (titleBlocked) {
     log.warning(`[PDP] Bot-block/CAPTCHA detected (title: "${pageTitle}") — will retry`);
-    throw new Error(`Bot-block on ${url}`);   // triggers Crawlee retry with fresh session
+    throw new Error(`Bot-block on ${url}`);
   }
 
-  // Wait for the product title or the main DP wrapper
-  await page.waitForSelector('#productTitle, #dp', { timeout: 20_000 }).catch(() => {
-    log.warning(`[PDP] Timeout waiting for page content on: ${url}`);
+  // ── Step 2: wait for actual product content ───────────────────────────────
+  // Wait for #productTitle specifically (not just #dp wrapper) so we know
+  // the product section is present, not just the page skeleton.
+  await page.waitForSelector('#productTitle', { timeout: 20_000 }).catch(() => {
+    log.warning(`[PDP] Timeout waiting for #productTitle on: ${url}`);
   });
+
+  // ── Step 3: content-level bot-block detection ─────────────────────────────
+  // Amazon sometimes serves "ghost" pages — the #productTitle element exists but
+  // has no text, and all product sections are empty. This is a silent bot-block
+  // that bypasses title-based checks. Detect it and force a retry.
+  const titleText = await page.$eval('#productTitle', el => el.textContent.trim()).catch(() => '');
+  if (!titleText) {
+    // Capture a screenshot so we can see what Amazon actually served
+    const screenshotBuffer = await page.screenshot({ fullPage: false }).catch(() => null);
+    if (screenshotBuffer) {
+      const store = await KeyValueStore.open();
+      const asinForLog = parseAsin(url) ?? 'unknown';
+      await store.setValue(`blocked_screenshot_${asinForLog}`, screenshotBuffer, { contentType: 'image/png' });
+      log.warning(`[PDP] Saved blocked-page screenshot to KV store: blocked_screenshot_${asinForLog}`);
+    }
+    log.warning(`[PDP] Page loaded but #productTitle is empty — silent bot-block, will retry: ${url}`);
+    throw new Error(`Silent bot-block (empty title) on ${url}`);
+  }
 
   // Expand accordion sections — two passes to catch nested sub-panels
   // (e.g. "Additional details" inside #poExpander which is itself inside
