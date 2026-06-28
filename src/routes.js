@@ -246,9 +246,11 @@ router.addHandler('PDP', async ({ page, request, pushData, log }) => {
   }
 
   // ── Step 2: wait for actual product content ───────────────────────────────
-  // Wait for #productTitle specifically (not just #dp wrapper) so we know
-  // the product section is present, not just the page skeleton.
-  await page.waitForSelector('#productTitle', { timeout: 20_000 }).catch(() => {
+  // First let the network settle, then wait for the title element to appear.
+  // networkidle ensures JS bundles and lazy-loaded content have finished loading.
+  await page.waitForLoadState('networkidle', { timeout: 30_000 }).catch(() => {});
+
+  await page.waitForSelector('#productTitle', { timeout: 30_000 }).catch(() => {
     log.warning(`[PDP] Timeout waiting for #productTitle on: ${url}`);
   });
 

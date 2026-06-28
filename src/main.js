@@ -32,9 +32,11 @@ const crawler = new PlaywrightCrawler({
   proxyConfiguration,
   requestHandler: router,
 
-  requestHandlerTimeoutSecs: 90,
-  navigationTimeoutSecs:     45,
-  maxConcurrency:            3,
+  requestHandlerTimeoutSecs: 120,
+  navigationTimeoutSecs:     60,
+  // Concurrency 1 = sequential requests = human-like pacing.
+  // Amazon rate-limits bursts from the same IP; a single lane avoids that.
+  maxConcurrency:            1,
 
   // Retry up to 3× so bot-blocked pages get fresh sessions + fingerprints
   maxRequestRetries: 3,

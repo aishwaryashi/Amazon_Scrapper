@@ -31,7 +31,7 @@ export function currencyFor(locale) {
 }
 
 /** Random async delay between minMs and maxMs milliseconds. */
-export function randomDelay(minMs = 1000, maxMs = 3000) {
+export function randomDelay(minMs = 3000, maxMs = 6000) {
   const ms = Math.floor(Math.random() * (maxMs - minMs + 1)) + minMs;
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
