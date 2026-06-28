@@ -36,8 +36,8 @@ const crawler = new PlaywrightCrawler({
   navigationTimeoutSecs:     45,
   maxConcurrency:            3,
 
-  // Retry twice so bot-blocked pages get a fresh session + fingerprint
-  maxRequestRetries: 2,
+  // Retry up to 3× so bot-blocked pages get fresh sessions + fingerprints
+  maxRequestRetries: 3,
 
   // Rotate browser fingerprints (UA, viewport, platform, language) per session.
   // This is the primary anti-detection mechanism — do NOT set User-Agent manually

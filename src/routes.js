@@ -32,53 +32,77 @@ router.addHandler('LISTING', async ({ page, request, enqueueLinks, log }) => {
   if (isBestsellers) {
     // ── Bestsellers layout (/gp/bestsellers/... or /zgbs/...) ────────────────
     //
-    // Amazon India's bestseller layout changes frequently and no longer uses
-    // stable class names like .zg-item-immersion.  Instead we:
-    //   1. Wait for ANY /dp/ anchor to appear (universal signal that products loaded)
-    //   2. Extract unique ASINs from /dp/ links scoped to the product grid
-    //   3. Build canonical URLs from each ASIN
-    //
-    // This approach survives layout changes because /dp/<ASIN> is a permanent
-    // Amazon URL pattern that will never change.
+    // Strategy: /dp/<ASIN> is the only stable Amazon URL pattern — scan the full
+    // page for those anchors after triggering lazy-load via scrolling.
 
     const origin = new URL(url).origin; // e.g. "https://www.amazon.in"
 
-    // Wait up to 20 s for any product link — gives time for lazy-loaded grids
-    await page.waitForSelector('a[href*="/dp/"]', { timeout: 20_000 }).catch(() => {
-      log.warning(`[LISTING] No /dp/ links appeared on bestseller page ${pageNum}`);
+    // ── Bot-block detection on listing page ───────────────────────────────────
+    const listingBlocked = await page.evaluate(() =>
+      document.title.includes('Robot Check') ||
+      document.title.includes('CAPTCHA') ||
+      document.title.includes('Sorry') ||
+      document.title.includes('Just a moment') ||
+      !!document.querySelector('form[action*="captcha"]') ||
+      !!document.querySelector('#captchacharacters'),
+    );
+    if (listingBlocked) {
+      log.warning(`[LISTING] Bot-block detected on listing page (title: "${await page.title()}") — will retry`);
+      throw new Error(`Bot-block on listing page ${url}`);
+    }
+
+    // ── Scroll to trigger lazy-loaded product grid ─────────────────────────
+    // Amazon's bestseller grids are rendered by JS and only load when visible.
+    // Scrolling through the page forces that rendering before we scan for links.
+    await page.evaluate(async () => {
+      await new Promise((resolve) => {
+        let distance = 0;
+        const step = 400;
+        const timer = setInterval(() => {
+          window.scrollBy(0, step);
+          distance += step;
+          if (distance >= document.body.scrollHeight) {
+            clearInterval(timer);
+            resolve();
+          }
+        }, 150);
+      });
+    }).catch(() => {});
+
+    // Wait for any /dp/ link to appear after scroll, up to 25 s
+    await page.waitForSelector('a[href*="/dp/"]', { timeout: 25_000 }).catch(() => {
+      log.warning(`[LISTING] No /dp/ links appeared on bestseller page ${pageNum} after scroll`);
     });
 
-    // Extra settle time for JS-rendered grids
-    await page.waitForTimeout(2500);
+    // Extra settle for JS grid rendering
+    await page.waitForTimeout(2000);
 
-    // Log the first 300 chars of body for debugging if needed
+    // ── Debug: log which grid container (if any) Amazon rendered ─────────────
     const gridDebug = await page.evaluate(() => {
-      const grid = document.querySelector('#zg-ordered-list, #zg-right-col, .p13n-desktop-grid');
-      return grid ? `found: ${grid.id || grid.className.slice(0, 60)}` : 'no grid container found';
+      // Amazon uses many different container IDs/classes across categories and time.
+      const candidates = [
+        '#zg-ordered-list',          // classic bestsellers grid
+        '#zg-right-col',             // some subcategory layouts
+        '.p13n-desktop-grid',        // newer desktop grid
+        '[data-a-carousel-options]', // carousel-based bestsellers
+        '.s-result-list',            // search-style fallback
+      ];
+      for (const sel of candidates) {
+        const el = document.querySelector(sel);
+        if (el) return `found: ${el.id || el.className.slice(0, 80)} [sel=${sel}]`;
+      }
+      return 'no known grid container found';
     });
     log.info(`[LISTING] Grid container: ${gridDebug}`);
 
+    // ── Extract ASINs from the entire page ────────────────────────────────────
     allLinks = await page.evaluate((origin) => {
-      const seen  = new Set();
+      const seen   = new Set();
       const asinRe = /\/dp\/([A-Z0-9]{10})/i;
-
-      // Prefer a scoped grid container; fall back to full body
-      const containers = [
-        '#zg-ordered-list',
-        '#zg-right-col',
-        '.p13n-desktop-grid',
-        'body',
-      ];
-
-      let root = null;
-      for (const sel of containers) {
-        root = document.querySelector(sel);
-        if (root) break;
-      }
-
       const results = [];
-      root.querySelectorAll('a[href*="/dp/"]').forEach((a) => {
-        const m = a.href.match(asinRe);
+
+      document.querySelectorAll('a[href*="/dp/"]').forEach((a) => {
+        const m = (a.href || '').match(asinRe);
         if (!m) return;
         const asin = m[1].toUpperCase();
         if (!seen.has(asin)) {
@@ -90,15 +114,50 @@ router.addHandler('LISTING', async ({ page, request, enqueueLinks, log }) => {
       return results;
     }, origin);
 
-    // Next-page: scope to main column to avoid grabbing sidebar pagination
+    // ── If still 0 links, save a screenshot and throw to retry ───────────────
+    if (allLinks.length === 0) {
+      const screenshot = await page.screenshot({ fullPage: false }).catch(() => null);
+      if (screenshot) {
+        const store = await KeyValueStore.open();
+        await store.setValue(`listing_blocked_page${pageNum}`, screenshot, { contentType: 'image/png' });
+        log.warning(`[LISTING] Screenshot saved to KV: listing_blocked_page${pageNum}`);
+      }
+      const pageTitle = await page.title();
+      const bodySnip  = await page.evaluate(() => document.body?.innerText?.slice(0, 300) ?? '').catch(() => '');
+      log.warning(`[LISTING] 0 links found. Title: "${pageTitle}". Body snippet: ${bodySnip}`);
+      throw new Error(`No product links found on bestseller listing page ${pageNum} — possible bot-block`);
+    }
+
+    // Next-page: try multiple pagination selectors
     nextUrl = await page.evaluate(() => {
-      const col  = document.querySelector('#zg-right-col') || document.body;
-      const next = col.querySelector('ul.a-pagination .a-last a, li.a-last a');
-      return next ? next.href : null;
+      const selectors = [
+        'ul.a-pagination .a-last a',
+        'li.a-last a',
+        '.a-pagination .a-last a',
+        'a.s-pagination-next',
+      ];
+      for (const sel of selectors) {
+        const el = document.querySelector(sel);
+        if (el && el.href) return el.href;
+      }
+      return null;
     });
 
   } else {
     // ── Standard search / category SERP (/s?... or /s/...) ──────────────────
+    const serpBlocked = await page.evaluate(() =>
+      document.title.includes('Robot Check') ||
+      document.title.includes('CAPTCHA') ||
+      document.title.includes('Sorry') ||
+      document.title.includes('Just a moment') ||
+      !!document.querySelector('form[action*="captcha"]') ||
+      !!document.querySelector('#captchacharacters'),
+    );
+    if (serpBlocked) {
+      log.warning(`[LISTING] Bot-block on SERP page (title: "${await page.title()}") — will retry`);
+      throw new Error(`Bot-block on SERP listing page ${url}`);
+    }
+
     await page.waitForSelector(LISTING.productCard, { timeout: 15_000 }).catch(() => {
       log.warning(`[LISTING] No product cards found on page ${pageNum}`);
     });
