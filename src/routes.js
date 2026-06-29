@@ -28,6 +28,7 @@ router.addHandler('LISTING', async ({ page, request, enqueueLinks, log }) => {
 
   let allLinks = [];
   let nextUrl   = null;
+  let rankMap   = new Map(); // ASIN → listingRank (bestsellers badge or DOM position)
 
   if (isBestsellers) {
     // ── Bestsellers layout (/gp/bestsellers/... or /zgbs/...) ────────────────
@@ -95,8 +96,10 @@ router.addHandler('LISTING', async ({ page, request, enqueueLinks, log }) => {
     });
     log.info(`[LISTING] Grid container: ${gridDebug}`);
 
-    // ── Extract ASINs from the entire page ────────────────────────────────────
-    allLinks = await page.evaluate((origin) => {
+    // ── Extract ASINs with rank order from the entire page ───────────────────
+    // Each entry captures {url, listingRank} where listingRank comes from the
+    // badge text ("#1", "#2", …) or falls back to DOM insertion order.
+    const bsLinkData = await page.evaluate((origin) => {
       const seen   = new Set();
       const asinRe = /\/dp\/([A-Z0-9]{10})/i;
       const results = [];
@@ -105,14 +108,31 @@ router.addHandler('LISTING', async ({ page, request, enqueueLinks, log }) => {
         const m = (a.href || '').match(asinRe);
         if (!m) return;
         const asin = m[1].toUpperCase();
-        if (!seen.has(asin)) {
-          seen.add(asin);
-          results.push(`${origin}/dp/${asin}`);
+        if (seen.has(asin)) return;
+        seen.add(asin);
+
+        let listingRank = results.length + 1; // DOM-order fallback
+        const container = a.closest(
+          '.zg-item-immersion, [class*="zg-item"], li.zg-item, .p13n-sc-uncoverable-faceout',
+        );
+        if (container) {
+          const badge = container.querySelector(
+            '.zg-bdg-text, .p13n-sc-badge-label, [class*="bdg-text"]',
+          );
+          if (badge) {
+            const bm = badge.textContent.match(/(\d+)/);
+            if (bm) listingRank = parseInt(bm[1], 10);
+          }
         }
+
+        results.push({ url: `${origin}/dp/${asin}`, listingRank });
       });
 
       return results;
     }, origin);
+
+    allLinks = bsLinkData.map(r => r.url);
+    rankMap  = new Map(bsLinkData.map(r => [parseAsin(r.url), r.listingRank]));
 
     // ── If still 0 links, save a screenshot and throw to retry ───────────────
     if (allLinks.length === 0) {
@@ -162,11 +182,17 @@ router.addHandler('LISTING', async ({ page, request, enqueueLinks, log }) => {
       log.warning(`[LISTING] No product cards found on page ${pageNum}`);
     });
 
-    allLinks = await page.evaluate((sel) => {
+    const serpLinkData = await page.evaluate((sel) => {
       return Array.from(document.querySelectorAll(sel.productCard))
-        .map((card) => card.querySelector(sel.productLink)?.href ?? null)
-        .filter(Boolean);
+        .map((card, index) => ({
+          url:         card.querySelector(sel.productLink)?.href ?? null,
+          listingRank: index + 1,
+        }))
+        .filter(r => r.url !== null);
     }, LISTING);
+
+    allLinks = serpLinkData.map(r => r.url);
+    rankMap  = new Map(serpLinkData.map(r => [parseAsin(r.url), r.listingRank]));
 
     nextUrl = await page.evaluate((sel) => {
       const btn = document.querySelector(sel.nextPage);
@@ -195,6 +221,14 @@ router.addHandler('LISTING', async ({ page, request, enqueueLinks, log }) => {
       urls: linksToQueue.map(canonicalUrl),
       label: 'PDP',
       userData: { locale },
+      transformRequestFunction: (req) => {
+        const asin = parseAsin(req.url);
+        if (asin) {
+          const rank = rankMap.get(asin);
+          if (rank != null) req.userData.listingRank = rank;
+        }
+        return req;
+      },
     });
     await store.setValue('enqueuedCount', enqueuedSoFar + linksToQueue.length);
     log.info(`[LISTING] Enqueued ${linksToQueue.length} PDPs (total: ${enqueuedSoFar + linksToQueue.length})`);
@@ -329,6 +363,7 @@ router.addHandler('PDP', async ({ page, request, pushData, log }) => {
 
   const product = {
     // ── Core Identity ──────────────────────────────────────────────────────
+    listingRank: request.userData.listingRank ?? null,
     asin,
     title,
     brand,
